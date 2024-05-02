@@ -17,12 +17,4 @@ public static class Endpoints
         endpoints.MapPost("/api/product_warehouse", async (IDbServices service, ProductWarehouseInput input) => 
             TypedResults.Ok(await service.AddProductToWarehouse(input.IdProduct, input.IdWarehouse, input.Amount, input.CreatedAt)));
     }
-
-    public class ProductWarehouseInput
-    {
-        public int IdProduct { get; set; }
-        public int IdWarehouse { get; set; }
-        public int Amount { get; set; }
-        public DateTime CreatedAt { get; set; }
-    }
 }

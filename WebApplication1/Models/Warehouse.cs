@@ -12,5 +12,8 @@ public class Warehouse
     [Required]
     [MaxLength(200)]
     public string Address { get; set; }
+    [Required]
+    [MaxLength(5)]
+    public string test { get; set; }
     
 }

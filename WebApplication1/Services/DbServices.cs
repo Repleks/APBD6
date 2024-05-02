@@ -1,5 +1,7 @@
-﻿using System.Data.SqlClient;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 using System.Diagnostics.Tracing;
+using APBD6;
 using DefaultNamespace;
 
 public class DbServices(IConfiguration configuration) : IDbServices
@@ -165,6 +167,27 @@ public class DbServices(IConfiguration configuration) : IDbServices
     }
     public async Task<int> AddProductToWarehouse(int idProduct, int idWarehouse, int amount, DateTime CreatedAt)
     {
+        var productWarehouseInput = new ProductWarehouseInput
+        {
+            IdProduct = idProduct,
+            IdWarehouse = idWarehouse,
+            Amount = amount,
+            CreatedAt = CreatedAt
+        };
+
+        var validationContext = new ValidationContext(productWarehouseInput);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(productWarehouseInput, validationContext, validationResults, true);
+
+        if (!isValid)
+        {
+            foreach (var validationResult in validationResults)
+            {
+                Console.WriteLine(validationResult.ErrorMessage);
+                Console.WriteLine("Brak walidacji danych");
+            }
+            return -1;
+        }
         await using var connection = await GetConnection();
         var product = await GetProduct(idProduct);
         var warehouse = await GetWarehouse(idWarehouse);
